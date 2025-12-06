@@ -44,7 +44,7 @@ jobs:
       - name: Build TypeScript dependencies
         run: |
           yarn workspace @microrealestate/types build
-          yarn workspace @microrealestate/commonlibs build
+          yarn workspace @microrealestate/common build
 
       - name: Run Unit Tests
         working-directory: ./services/api
@@ -106,7 +106,7 @@ jobs:
       - name: Build TypeScript dependencies
         run: |
           yarn workspace @microrealestate/types build
-          yarn workspace @microrealestate/commonlibs build
+          yarn workspace @microrealestate/common build
 
       - name: Run Integration Tests
         working-directory: ./services/api
@@ -147,7 +147,7 @@ jobs:
       - name: Build TypeScript dependencies
         run: |
           yarn workspace @microrealestate/types build
-          yarn workspace @microrealestate/commonlibs build
+          yarn workspace @microrealestate/common build
 
       - name: Run Security Tests
         working-directory: ./services/api
@@ -206,7 +206,7 @@ jobs:
       - name: Build TypeScript dependencies
         run: |
           yarn workspace @microrealestate/types build
-          yarn workspace @microrealestate/commonlibs build
+          yarn workspace @microrealestate/common build
 
       - name: Run All Tests
         working-directory: ./services/api
@@ -278,7 +278,7 @@ jobs:
       - name: Build TypeScript dependencies
         run: |
           yarn workspace @microrealestate/types build
-          yarn workspace @microrealestate/commonlibs build
+          yarn workspace @microrealestate/common build
 
       - name: Run ESLint
         working-directory: ./services/api

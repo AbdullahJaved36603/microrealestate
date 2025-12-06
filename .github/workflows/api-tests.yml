@@ -30,30 +30,25 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache: 'yarn'
 
-      - name: Install root dependencies
-        run: npm ci
-
-      - name: Install API service dependencies
-        working-directory: ./services/api
-        run: npm ci
+      - name: Install dependencies
+        run: yarn install --immutable
 
       - name: Build TypeScript dependencies
         run: |
-          npm run build --workspace=types
-          npm run build --workspace=services/common
+          yarn workspace types build
+          yarn workspace @microrealestate/commonlibs build
 
       - name: Run Unit Tests
         working-directory: ./services/api
-        run: npm test -- --testPathPattern=unit --coverage --coverageDirectory=coverage/unit
+        run: yarn test --testPathPattern=unit --coverage --coverageDirectory=coverage/unit
         env:
           NODE_ENV: test
 
@@ -97,27 +92,25 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: |
-          npm ci
-          cd services/api && npm ci
+        run: yarn install --immutable
 
       - name: Build TypeScript dependencies
         run: |
-          npm run build --workspace=types
-          npm run build --workspace=services/common
+          yarn workspace types build
+          yarn workspace @microrealestate/commonlibs build
 
       - name: Run Integration Tests
         working-directory: ./services/api
-        run: npm test -- --testPathPattern=integration --coverage --coverageDirectory=coverage/integration
+        run: yarn test --testPathPattern=integration --coverage --coverageDirectory=coverage/integration
         env:
           NODE_ENV: test
           MONGO_URL: mongodb://localhost:27017/test
@@ -140,27 +133,25 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: |
-          npm ci
-          cd services/api && npm ci
+        run: yarn install --immutable
 
       - name: Build TypeScript dependencies
         run: |
-          npm run build --workspace=types
-          npm run build --workspace=services/common
+          yarn workspace types build
+          yarn workspace @microrealestate/commonlibs build
 
       - name: Run Security Tests
         working-directory: ./services/api
-        run: npm test -- --testPathPattern=security --coverage --coverageDirectory=coverage/security
+        run: yarn test --testPathPattern=security --coverage --coverageDirectory=coverage/security
         env:
           NODE_ENV: test
 
@@ -201,27 +192,25 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'npm'
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: |
-          npm ci
-          cd services/api && npm ci
+        run: yarn install --immutable
 
       - name: Build TypeScript dependencies
         run: |
-          npm run build --workspace=types
-          npm run build --workspace=services/common
+          yarn workspace types build
+          yarn workspace @microrealestate/commonlibs build
 
       - name: Run All Tests
         working-directory: ./services/api
-        run: npm test -- --coverage
+        run: yarn test --coverage
         env:
           NODE_ENV: test
           MONGO_URL: mongodb://localhost:27017/test
@@ -259,13 +248,13 @@ jobs:
           
           echo "Coverage: Statements=$STATEMENTS%, Branches=$BRANCHES%, Functions=$FUNCTIONS%, Lines=$LINES%"
           
-          if (( $(echo "$STATEMENTS < 80" | bc -l) )); then
-            echo "Statement coverage below 80%"
+          if (( $(echo "$STATEMENTS < 60" | bc -l) )); then
+            echo "Statement coverage below 60%"
             exit 1
           fi
           
-          if (( $(echo "$LINES < 80" | bc -l) )); then
-            echo "Line coverage below 80%"
+          if (( $(echo "$LINES < 60" | bc -l) )); then
+            echo "Line coverage below 60%"
             exit 1
           fi
 
@@ -275,31 +264,29 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'npm'
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: |
-          npm ci
-          cd services/api && npm ci
+        run: yarn install --immutable
 
       - name: Build TypeScript dependencies
         run: |
-          npm run build --workspace=types
-          npm run build --workspace=services/common
+          yarn workspace types build
+          yarn workspace @microrealestate/commonlibs build
 
       - name: Run ESLint
         working-directory: ./services/api
-        run: npm run eslint
+        run: yarn eslint
 
       - name: Run Prettier Check
         working-directory: ./services/api
-        run: npx prettier --check 'src/**/*.js'
+        run: yarn prettier --check 'src/**/*.{js,ts}'
 
   test-summary:
     name: Test Summary

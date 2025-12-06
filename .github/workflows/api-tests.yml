@@ -151,16 +151,9 @@ jobs:
 
       - name: Run Security Tests
         working-directory: ./services/api
-        run: yarn test --testPathPattern=security --coverage --coverageDirectory=coverage/security
+        run: yarn test --testPathPattern=security
         env:
           NODE_ENV: test
-
-      - name: Upload Security Test Coverage
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./services/api/coverage/security/lcov.info
-          flags: security-tests
-          name: security-test-coverage
 
   all-tests:
     name: All Tests with Coverage Report

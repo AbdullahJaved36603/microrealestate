@@ -38,31 +38,31 @@ jobs:
       matrix:
         include:
           - appname: gateway
-            image: ghcr.io/${{ toLower(github.repository) }}/gateway
+            image: ghcr.io/abdullahjaved36603/microrealestate/gateway
             dockerfile: services/gateway/Dockerfile
           - appname: api
-            image: ghcr.io/${{ toLower(github.repository) }}/api
+            image: ghcr.io/abdullahjaved36603/microrealestate/api
             dockerfile: services/api/Dockerfile
           - appname: tenantapi
-            image: ghcr.io/${{ toLower(github.repository) }}/tenantapi
+            image: ghcr.io/abdullahjaved36603/microrealestate/tenantapi
             dockerfile: services/tenantapi/Dockerfile
           - appname: authenticator
-            image: ghcr.io/${{ toLower(github.repository) }}/authenticator
+            image: ghcr.io/abdullahjaved36603/microrealestate/authenticator
             dockerfile: services/authenticator/Dockerfile
           - appname: pdfgenerator
-            image: ghcr.io/${{ toLower(github.repository) }}/pdfgenerator
+            image: ghcr.io/abdullahjaved36603/microrealestate/pdfgenerator
             dockerfile: services/pdfgenerator/Dockerfile
           - appname: emailer
-            image: ghcr.io/${{ toLower(github.repository) }}/emailer
+            image: ghcr.io/abdullahjaved36603/microrealestate/emailer
             dockerfile: services/emailer/Dockerfile
           - appname: resetservice
-            image: ghcr.io/${{ toLower(github.repository) }}/resetservice
+            image: ghcr.io/abdullahjaved36603/microrealestate/resetservice
             dockerfile: services/resetservice/Dockerfile
           - appname: landlord-frontend
-            image: ghcr.io/${{ toLower(github.repository) }}/landlord-frontend
+            image: ghcr.io/abdullahjaved36603/microrealestate/landlord-frontend
             dockerfile: webapps/landlord/Dockerfile
           - appname: tenant-frontend
-            image: ghcr.io/${{ toLower(github.repository) }}/tenant-frontend
+            image: ghcr.io/abdullahjaved36603/microrealestate/tenant-frontend
             dockerfile: webapps/tenant/Dockerfile
 
     steps:

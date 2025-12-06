@@ -1,8 +1,38 @@
 /* eslint-env node, jest */
+import { jest } from '@jest/globals';
 import { Collections } from '@microrealestate/common';
 import request from 'supertest';
 import express from 'express';
 import routes from '../../routes.js';
+
+const apiPrefix = '/api/v2';
+
+const resetCollections = () => {
+  Collections.Lease = {
+    find: jest.fn(),
+    findOne: jest.fn(),
+    findOneAndUpdate: jest.fn(),
+    deleteMany: jest.fn()
+  };
+
+  Collections.Tenant = {
+    find: jest.fn(),
+    aggregate: jest.fn()
+  };
+
+  Collections.Property = {
+    find: jest.fn(),
+    findOne: jest.fn(),
+    findOneAndUpdate: jest.fn(),
+    deleteMany: jest.fn()
+  };
+
+  Collections.Template = {
+    find: jest.fn(),
+    deleteMany: jest.fn(),
+    updateMany: jest.fn()
+  };
+};
 
 // Mock the common module
 jest.mock('@microrealestate/common', () => ({
@@ -27,6 +57,17 @@ jest.mock('@microrealestate/common', () => ({
       find: jest.fn(),
       findOne: jest.fn()
     },
+    Template: {
+      find: jest.fn(),
+      deleteMany: jest.fn(),
+      updateMany: jest.fn()
+    },
+    startSession: jest.fn(() => ({
+      startTransaction: jest.fn(),
+      commitTransaction: jest.fn(),
+      abortTransaction: jest.fn(),
+      endSession: jest.fn()
+    })),
     ObjectId: jest.fn((id) => id)
   },
   Middlewares: {
@@ -84,11 +125,12 @@ describe('API Integration Tests - Leases', () => {
   beforeAll(() => {
     app = express();
     app.use(express.json());
-    app.use('/api', routes());
+    app.use(routes());
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetCollections();
   });
 
   describe('GET /api/leases - Get all leases', () => {
@@ -121,7 +163,7 @@ describe('API Integration Tests - Leases', () => {
       ]);
 
       const response = await request(app)
-        .get('/api/leases')
+        .get(`${apiPrefix}/leases`)
         .set('Authorization', 'Bearer test-token')
         .expect(200);
 
@@ -140,7 +182,7 @@ describe('API Integration Tests - Leases', () => {
       Collections.Tenant.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .get('/api/leases')
+        .get(`${apiPrefix}/leases`)
         .set('Authorization', 'Bearer test-token')
         .expect(200);
 
@@ -166,7 +208,7 @@ describe('API Integration Tests - Leases', () => {
       Collections.Tenant.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .get('/api/leases/lease123')
+        .get(`${apiPrefix}/leases/lease123`)
         .set('Authorization', 'Bearer test-token')
         .expect(200);
 
@@ -183,7 +225,7 @@ describe('API Integration Tests - Leases', () => {
       Collections.Tenant.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .get('/api/leases/nonexistent')
+        .get(`${apiPrefix}/leases/nonexistent`)
         .set('Authorization', 'Bearer test-token')
         .expect(404);
 
@@ -216,7 +258,7 @@ describe('API Integration Tests - Leases', () => {
       Collections.Tenant.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .post('/api/leases')
+        .post(`${apiPrefix}/leases`)
         .set('Authorization', 'Bearer test-token')
         .send(newLease)
         .expect(200);
@@ -233,7 +275,7 @@ describe('API Integration Tests - Leases', () => {
       };
 
       const response = await request(app)
-        .post('/api/leases')
+        .post(`${apiPrefix}/leases`)
         .set('Authorization', 'Bearer test-token')
         .send(invalidLease)
         .expect(422);
@@ -262,7 +304,7 @@ describe('API Integration Tests - Leases', () => {
       });
 
       const response = await request(app)
-        .patch('/api/leases/lease123')
+        .patch(`${apiPrefix}/leases/lease123`)
         .set('Authorization', 'Bearer test-token')
         .send(updateData)
         .expect(200);
@@ -278,7 +320,7 @@ describe('API Integration Tests - Leases', () => {
       };
 
       const response = await request(app)
-        .patch('/api/leases/lease123')
+        .patch(`${apiPrefix}/leases/lease123`)
         .set('Authorization', 'Bearer test-token')
         .send(invalidUpdate)
         .expect(422);
@@ -299,7 +341,7 @@ describe('API Integration Tests - Leases', () => {
       });
 
       const response = await request(app)
-        .patch('/api/leases/nonexistent')
+        .patch(`${apiPrefix}/leases/nonexistent`)
         .set('Authorization', 'Bearer test-token')
         .send(updateData)
         .expect(404);
@@ -319,7 +361,7 @@ describe('API Integration Tests - Leases', () => {
       Collections.Lease.deleteMany.mockResolvedValue({ deletedCount: 1 });
 
       await request(app)
-        .delete('/api/leases/lease123')
+        .delete(`${apiPrefix}/leases/lease123`)
         .set('Authorization', 'Bearer test-token')
         .expect(200);
 
@@ -340,7 +382,7 @@ describe('API Integration Tests - Leases', () => {
       Collections.Lease.deleteMany.mockResolvedValue({ deletedCount: 2 });
 
       await request(app)
-        .delete('/api/leases/lease1,lease2')
+        .delete(`${apiPrefix}/leases/lease1,lease2`)
         .set('Authorization', 'Bearer test-token')
         .expect(200);
 
@@ -356,7 +398,7 @@ describe('API Integration Tests - Leases', () => {
       ]);
 
       const response = await request(app)
-        .delete('/api/leases/lease123')
+        .delete(`${apiPrefix}/leases/lease123`)
         .set('Authorization', 'Bearer test-token')
         .expect(422);
 
@@ -369,7 +411,7 @@ describe('API Integration Tests - Leases', () => {
       Collections.Lease.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .delete('/api/leases/nonexistent')
+        .delete(`${apiPrefix}/leases/nonexistent`)
         .set('Authorization', 'Bearer test-token')
         .expect(404);
 
@@ -384,11 +426,12 @@ describe('API Integration Tests - Properties', () => {
   beforeAll(() => {
     app = express();
     app.use(express.json());
-    app.use('/api', routes());
+    app.use(routes());
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetCollections();
   });
 
   describe('GET /api/properties - Get all properties', () => {
@@ -419,7 +462,7 @@ describe('API Integration Tests - Properties', () => {
       Collections.Tenant.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .get('/api/properties')
+        .get(`${apiPrefix}/properties`)
         .set('Authorization', 'Bearer test-token')
         .expect(200);
 
@@ -438,7 +481,7 @@ describe('API Integration Tests - Properties', () => {
       Collections.Tenant.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .get('/api/properties')
+        .get(`${apiPrefix}/properties`)
         .set('Authorization', 'Bearer test-token')
         .expect(200);
 
@@ -463,7 +506,7 @@ describe('API Integration Tests - Properties', () => {
       Collections.Tenant.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .get('/api/properties/prop123')
+        .get(`${apiPrefix}/properties/prop123`)
         .set('Authorization', 'Bearer test-token')
         .expect(200);
 
@@ -497,7 +540,7 @@ describe('API Integration Tests - Properties', () => {
       Collections.Tenant.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .post('/api/properties')
+        .post(`${apiPrefix}/properties`)
         .set('Authorization', 'Bearer test-token')
         .send(newProperty)
         .expect(200);
@@ -526,7 +569,7 @@ describe('API Integration Tests - Properties', () => {
       Collections.Tenant.find.mockResolvedValue([]);
 
       const response = await request(app)
-        .patch('/api/properties/prop123')
+        .patch(`${apiPrefix}/properties/prop123`)
         .set('Authorization', 'Bearer test-token')
         .send(updateData)
         .expect(200);
@@ -541,7 +584,7 @@ describe('API Integration Tests - Properties', () => {
       Collections.Property.deleteMany.mockResolvedValue({ deletedCount: 2 });
 
       await request(app)
-        .delete('/api/properties/prop1,prop2')
+        .delete(`${apiPrefix}/properties/prop1,prop2`)
         .set('Authorization', 'Bearer test-token')
         .expect(200);
 
@@ -559,11 +602,12 @@ describe('API Integration Tests - Dashboard', () => {
   beforeAll(() => {
     app = express();
     app.use(express.json());
-    app.use('/api', routes());
+    app.use(routes());
   });
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetCollections();
   });
 
   describe('GET /api/dashboard - Get dashboard data', () => {
@@ -589,7 +633,7 @@ describe('API Integration Tests - Dashboard', () => {
       });
 
       const response = await request(app)
-        .get('/api/dashboard')
+        .get(`${apiPrefix}/dashboard`)
         .set('Authorization', 'Bearer test-token')
         .set('organizationid', 'realm123')
         .expect(200);

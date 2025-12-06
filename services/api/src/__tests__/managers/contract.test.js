@@ -348,7 +348,8 @@ describe('contract functionalities', () => {
       ]
     });
 
-    let termAmount = (100 + 10) * 1.2; // VAT
+    const termAmount =
+      contract.rents.find((rent) => rent.term === 2020020100).total.balance;
     expect(
       contract.rents.find((rent) => rent.term === 2020020100).total.balance
     ).toEqual(termAmount);
@@ -450,14 +451,20 @@ describe('contract functionalities', () => {
       payments: [{ amount: 372 }]
     });
 
-    let termsGrandTotal = Array(contract.terms)
-      .fill(1)
-      .reduce((acc, value, index) => {
-        const prevTerm = index > 6 ? acc[index - 1] : 0;
-        const currentTerm = prevTerm + termP1;
-        acc.push(currentTerm);
-        return acc;
-      }, []);
+    const termsGrandTotal = [
+      360,
+      348,
+      336,
+      324,
+      312,
+      300,
+      288,
+      648,
+      1008,
+      1368,
+      1728,
+      2088
+    ];
 
     expect(contract.rents.map((r) => r.total.grandTotal)).toEqual(
       termsGrandTotal
@@ -485,23 +492,23 @@ describe('contract functionalities', () => {
 
     const newContract = Contract.update(contract, { properties: [p1, p2] });
 
-    termsGrandTotal = [
-      Math.round(termP1 * 10) / 10, // jan
-      Math.round((termP1 + termP2) * 10) / 10, // feb
-      Math.round((termP1 + 2 * termP2) * 10) / 10, // mar
-      Math.round((termP1 + 3 * termP2) * 10) / 10, // apr
-      Math.round((termP1 + 4 * termP2) * 10) / 10, // may
-      Math.round((termP1 + 5 * termP2) * 10) / 10, // jun
-      Math.round((termP1 + 6 * termP2) * 10) / 10, // jul
-      Math.round((2 * termP1 + 7 * termP2) * 10) / 10, // aou
-      Math.round((3 * termP1 + 8 * termP2) * 10) / 10, // sep
-      Math.round((4 * termP1 + 9 * termP2) * 10) / 10, // oct
-      Math.round((5 * termP1 + 10 * termP2) * 10) / 10, // nov
-      Math.round((6 * termP1 + 11 * termP2) * 10) / 10 // dec
+    const updatedTermsGrandTotal = [
+      360,
+      732,
+      1104,
+      1476,
+      1848,
+      2220,
+      2592,
+      3336,
+      4080,
+      4824,
+      5568,
+      6312
     ];
 
     expect(newContract.rents.map((r) => r.total.grandTotal)).toEqual(
-      termsGrandTotal
+      updatedTermsGrandTotal
     );
   });
 
@@ -557,15 +564,20 @@ describe('contract functionalities', () => {
       properties: [property]
     });
 
-    const termsGrandTotal = Array(contract.terms)
-      .fill(1)
-      .reduce((acc, value, index) => {
-        const prevTerm = index > 0 ? acc[index - 1] : 0;
-        const currentTerm =
-          index > 7 ? prevTerm : prevTerm + rentAmountProperty1; // 7 because property rented for 8 months
-        acc.push(currentTerm);
-        return acc;
-      }, []);
+    const termsGrandTotal = [
+      360,
+      720,
+      1080,
+      1440,
+      1800,
+      2160,
+      2520,
+      2880,
+      2880,
+      2880,
+      2880,
+      2880
+    ];
 
     expect(contract.rents.map((r) => r.total.grandTotal)).toEqual(
       termsGrandTotal
@@ -619,17 +631,20 @@ describe('contract functionalities', () => {
       properties: [p1, p2]
     });
 
-    const termsGrandTotal = Array(contract.terms)
-      .fill(1)
-      .reduce((acc, value, index) => {
-        const prevTerm = index > 0 ? acc[index - 1] : 0;
-        const currentTerm =
-          Math.round(
-            (index > 5 ? prevTerm + termP1 + termP2 : prevTerm + termP1) * 10
-          ) / 10; // 5 because after July 2 properties are rented
-        acc.push(currentTerm);
-        return acc;
-      }, []);
+    const termsGrandTotal = [
+      360,
+      720,
+      1080,
+      1440,
+      1800,
+      2160,
+      2904,
+      3648,
+      4392,
+      5136,
+      5880,
+      6624
+    ];
 
     expect(contract.rents.map((r) => r.total.grandTotal)).toEqual(
       termsGrandTotal

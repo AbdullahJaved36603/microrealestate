@@ -1,42 +1,39 @@
 /* eslint-env node, jest */
+import { jest } from '@jest/globals';
 import { Collections } from '@microrealestate/common';
 import moment from 'moment';
 
 // Mock the Collections module for database integration tests
-jest.mock('@microrealestate/common', () => {
-  const actualCommon = jest.requireActual('@microrealestate/common');
-  return {
-    ...actualCommon,
-    Collections: {
-      Lease: {
-        find: jest.fn(),
-        findOne: jest.fn(),
-        findOneAndUpdate: jest.fn(),
-        deleteMany: jest.fn()
-      },
-      Tenant: {
-        find: jest.fn(),
-        findOne: jest.fn(),
-        findOneAndUpdate: jest.fn(),
-        aggregate: jest.fn(),
-        deleteMany: jest.fn()
-      },
-      Property: {
-        find: jest.fn(),
-        findOne: jest.fn(),
-        findOneAndUpdate: jest.fn(),
-        deleteMany: jest.fn()
-      },
-      Realm: {
-        find: jest.fn(),
-        findOne: jest.fn(),
-        findOneAndUpdate: jest.fn()
-      },
-      ObjectId: jest.fn((id) => id),
-      startSession: jest.fn()
-    }
-  };
-});
+jest.mock('@microrealestate/common', () => ({
+  Collections: {
+    Lease: {
+      find: jest.fn(),
+      findOne: jest.fn(),
+      findOneAndUpdate: jest.fn(),
+      deleteMany: jest.fn()
+    },
+    Tenant: {
+      find: jest.fn(),
+      findOne: jest.fn(),
+      findOneAndUpdate: jest.fn(),
+      aggregate: jest.fn(),
+      deleteMany: jest.fn()
+    },
+    Property: {
+      find: jest.fn(),
+      findOne: jest.fn(),
+      findOneAndUpdate: jest.fn(),
+      deleteMany: jest.fn()
+    },
+    Realm: {
+      find: jest.fn(),
+      findOne: jest.fn(),
+      findOneAndUpdate: jest.fn()
+    },
+    ObjectId: jest.fn((id) => id),
+    startSession: jest.fn()
+  }
+}));
 
 describe('Database Integration Tests - Tenant Queries', () => {
   beforeEach(() => {

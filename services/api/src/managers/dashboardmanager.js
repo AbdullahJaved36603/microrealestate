@@ -47,11 +47,11 @@ export async function all(req, res) {
   let totalYearRevenues = 0;
 
   if (allTenants.length > 0) {
-    totalYearRevenues = allTenants.reduce((total, { rents }) => {
-      let sumPayments = 0;
-      rents.forEach((rent) => {
-        rent.payments.forEach((payment) => {
-          if (!payment.date || payment.amount === 0) {
+    totalYearRevenues = allTenants.reduce((total, { rents = [] }) => {
+      const sumPayments = rents.reduce((sum, rent) => {
+        const payments = rent.payments || [];
+        payments.forEach((payment) => {
+          if (!payment?.date || payment.amount === 0) {
             return;
           }
 
@@ -59,10 +59,11 @@ export async function all(req, res) {
           if (
             paymentMoment.isBetween(beginOfTheYear, endOfTheYear, 'day', '[]')
           ) {
-            sumPayments = sumPayments + payment.amount;
+            sum += payment.amount;
           }
         });
-      });
+        return sum;
+      }, 0);
 
       return total + sumPayments;
     }, 0);
@@ -84,7 +85,7 @@ export async function all(req, res) {
     tenantCount || propertyCount
       ? activeTenants
           .reduce((acc, tenant) => {
-            const currentRent = tenant.rents.find((rent) => {
+            const currentRent = (tenant.rents || []).find((rent) => {
               const termMoment = rent.term && moment(rent.term, 'YYYYMMDDHH');
               return (
                 termMoment &&
@@ -124,7 +125,7 @@ export async function all(req, res) {
     return acc;
   }, {});
   const revenues = Object.entries(
-    allTenants.reduce((acc, { rents }) => {
+    allTenants.reduce((acc, { rents = [] }) => {
       rents.forEach((rent) => {
         const termMoment = moment(rent.term, 'YYYYMMDDHH');
         if (!termMoment.isBetween(beginOfTheYear, endOfTheYear, 'day', '[]')) {
@@ -162,6 +163,10 @@ export async function all(req, res) {
     );
 
   res.json({
+    tenantCount,
+    propertyCount,
+    occupancyRate,
+    totalYearRevenues,
     overview,
     topUnpaid,
     revenues

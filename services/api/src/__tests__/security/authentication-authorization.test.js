@@ -1,4 +1,5 @@
 /* eslint-env node, jest */
+import { jest } from '@jest/globals';
 import request from 'supertest';
 import express from 'express';
 import jwt from 'jsonwebtoken';
@@ -613,7 +614,7 @@ describe('Security Tests - SQL/NoSQL Injection', () => {
         '<script>@example.com'
       ];
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
       validEmails.forEach((email) => {
         expect(emailRegex.test(email)).toBe(true);
@@ -633,7 +634,7 @@ describe('Security Tests - SQL/NoSQL Injection', () => {
       ];
 
       const hasSpecialChars = (str) => {
-        const dangerousChars = /<|>|{|}|\$|\(|\)|;|--|\/\*|\*\//;
+        const dangerousChars = /[<>\{\}\$\(\);\*'`]|--|\/\*|\*\//;
         return dangerousChars.test(str);
       };
 

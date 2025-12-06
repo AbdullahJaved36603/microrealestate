@@ -1,4 +1,5 @@
 /* eslint-env node, jest */
+import { jest } from '@jest/globals';
 import * as leaseManager from '../../managers/leasemanager.js';
 import { Collections, ServiceError } from '@microrealestate/common';
 
@@ -14,6 +15,17 @@ jest.mock('@microrealestate/common', () => ({
     Tenant: {
       find: jest.fn()
     },
+    Template: {
+      find: jest.fn(),
+      deleteMany: jest.fn(),
+      updateMany: jest.fn()
+    },
+    startSession: jest.fn(() => ({
+      startTransaction: jest.fn(),
+      commitTransaction: jest.fn(),
+      abortTransaction: jest.fn(),
+      endSession: jest.fn()
+    })),
     ObjectId: jest.fn((id) => id)
   },
   logger: {
@@ -33,7 +45,31 @@ jest.mock('@microrealestate/common', () => ({
 describe('Lease Manager - Unit Tests', () => {
   let mockReq, mockRes;
 
+  const resetCollections = () => {
+    Collections.Lease = {
+      find: jest.fn(),
+      findOne: jest.fn(),
+      findOneAndUpdate: jest.fn(),
+      deleteMany: jest.fn()
+    };
+    Collections.Tenant = {
+      find: jest.fn()
+    };
+    Collections.Template = {
+      find: jest.fn(),
+      deleteMany: jest.fn(),
+      updateMany: jest.fn()
+    };
+    Collections.startSession = jest.fn(() => ({
+      startTransaction: jest.fn(),
+      commitTransaction: jest.fn(),
+      abortTransaction: jest.fn(),
+      endSession: jest.fn()
+    }));
+  };
+
   beforeEach(() => {
+    resetCollections();
     mockReq = {
       realm: {
         _id: 'realm123'

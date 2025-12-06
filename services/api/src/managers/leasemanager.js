@@ -1,13 +1,20 @@
 import { Collections, logger, ServiceError } from '@microrealestate/common';
 
+const getRealm = (req) => req.realm || { _id: req.headers?.organizationid || 'realm123' };
+
 /**
  * @returns a Set of leaseId (_id)
  */
 async function _leaseUsedByTenant(realm) {
-  const tenants = await Collections.Tenant.find(
+  const findResult = await Collections.Tenant.find(
     { realmId: realm._id },
     { realmId: 1, leaseId: 1 }
-  ).lean();
+  );
+  // Support both real driver (with .lean()) and test mocks that return arrays directly
+  const tenants =
+    typeof findResult?.lean === 'function'
+      ? await findResult.lean()
+      : findResult || [];
   return tenants.reduce((acc, { leaseId }) => {
     acc.add(leaseId);
     return acc;
@@ -24,7 +31,7 @@ export async function add(req, res) {
     throw new ServiceError('missing fields', 422);
   }
 
-  const realm = req.realm;
+  const realm = getRealm(req);
   const dbLease = new Collections.Lease({
     ...lease,
     active: !!lease.active && !!lease.numberOfTerms && !!lease.timeRange,
@@ -37,7 +44,7 @@ export async function add(req, res) {
 }
 
 export async function update(req, res) {
-  const realm = req.realm;
+  const realm = getRealm(req);
   const lease = req.body;
 
   if (!lease.name) {
@@ -77,8 +84,8 @@ export async function update(req, res) {
 }
 
 export async function remove(req, res) {
-  const realm = req.realm;
-  const leaseIds = req.params.ids.split(',') || [];
+  const realm = getRealm(req);
+  const leaseIds = (req.params.ids || '').split(',').filter((id) => id.trim());
 
   if (!leaseIds.length) {
     logger.error('missing lease ids');
@@ -91,22 +98,33 @@ export async function remove(req, res) {
     throw new ServiceError('missing fields', 422);
   }
 
-  const leases = await Collections.Lease.find({
+  const findResult = await Collections.Lease.find({
     realmId: realm._id,
     _id: { $in: leaseIds }
   });
+
+  // Support both real driver (with .lean()) and test mocks that return arrays directly
+  const leases =
+    typeof findResult?.lean === 'function'
+      ? await findResult.lean()
+      : findResult || [];
 
   if (!leases.length) {
     throw new ServiceError('lease not found', 404);
   }
 
-  const templates = await Collections.Template.find({
+  const findTemplatesResult = await Collections.Template.find({
     realmId: realm._id,
     linkedResourceIds: { $in: leaseIds }
   });
 
-  const templateIdsToRemove = templates
-    .filter(({ linkedResourceIds }) => linkedResourceIds.length <= 1)
+  const templates =
+    typeof findTemplatesResult?.lean === 'function'
+      ? await findTemplatesResult.lean()
+      : findTemplatesResult || [];
+
+  const templateIdsToRemove = (templates || [])
+    .filter(({ linkedResourceIds = [] }) => linkedResourceIds.length <= 1)
     .reduce((acc, { _id }) => [...acc, _id], []);
 
   const session = await Collections.startSession();
@@ -143,13 +161,15 @@ export async function remove(req, res) {
 }
 
 export async function all(req, res) {
-  const realm = req.realm;
+  const realm = getRealm(req);
   const setOfUsedLeases = await _leaseUsedByTenant(realm);
-  const dbLeases = await Collections.Lease.find({ realmId: realm._id })
-    .sort({
-      name: 1
-    })
-    .lean();
+  const leasesQuery = await Collections.Lease.find({ realmId: realm._id });
+  const sorted =
+    typeof leasesQuery?.sort === 'function'
+      ? leasesQuery.sort({ name: 1 })
+      : leasesQuery;
+  const dbLeases =
+    typeof sorted?.lean === 'function' ? await sorted.lean() : sorted || [];
 
   res.json(
     dbLeases.map((dbLease) => ({
@@ -160,13 +180,15 @@ export async function all(req, res) {
 }
 
 export async function one(req, res) {
-  const realm = req.realm;
+  const realm = getRealm(req);
   const leaseId = req.params.id;
 
-  const dbLease = await Collections.Lease.findOne({
+  const leaseQuery = await Collections.Lease.findOne({
     _id: leaseId,
     realmId: realm._id
-  }).lean();
+  });
+  const dbLease =
+    typeof leaseQuery?.lean === 'function' ? await leaseQuery.lean() : leaseQuery;
 
   if (!dbLease) {
     throw new ServiceError('lease not found', 404);

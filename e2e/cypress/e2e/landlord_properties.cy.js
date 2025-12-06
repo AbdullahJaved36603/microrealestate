@@ -1,3 +1,4 @@
+/* eslint-disable cypress/unsafe-to-chain-command */
 /// <reference types="cypress" />
 
 // Prereq credentials
@@ -23,7 +24,7 @@ const loginAndGoProperties = () => {
   cy.get('[data-cy="appMenu"]').click();
   
   // Click Properties in menu - from your recording: div:nth-of-type(4) span
-  cy.get("div:nth-of-type(4) span").click();
+  cy.get('div:nth-of-type(4) span').click();
   
   // Verify we're on properties page
   cy.url({ timeout: 15000 }).should('match', /\/properties/);
@@ -37,7 +38,7 @@ const startNewProperty = (name) => {
 
 const openAddPropertyDialog = () => {
   // Click the Add Property button (plus icon) - use .first() to get only the first button
-  cy.get("div.fixed > button").first().click();
+  cy.get('div.fixed > button').first().click();
 };
 
 const enterPropertyNameInDialog = (name) => {
@@ -48,7 +49,7 @@ const enterPropertyNameInDialog = (name) => {
 
 const clickAddInDialog = () => {
   // Click Add button in dialog - from HTML: [data-cy='submitProperty']
-  cy.get("[data-cy='submitProperty']").click();
+  cy.get('[data-cy="submitProperty"]').click();
   
   // Wait for property page to load
   cy.get('[data-cy="propertyPage"]', { timeout: 10000 }).should('be.visible');
@@ -62,9 +63,9 @@ const selectPropertyType = (type = 'Room') => {
   // For Room: li:nth-of-type(3)
   // For Apartment: li:nth-of-type(1) maybe?
   if (type === 'Room') {
-    cy.get("li:nth-of-type(3)").click();
+    cy.get('li:nth-of-type(3)').click();
   } else if (type === 'Apartment') {
-    cy.get("li").contains('Apartment').click();
+    cy.get('li').contains('Apartment').click();
   }
 };
 
@@ -140,7 +141,7 @@ const fillPropertyFormFields = ({
 
 const clickSaveProperty = () => {
   // Click Save button - from HTML: [data-cy='submit']
-  cy.get("[data-cy='submit']").click();
+  cy.get('[data-cy="submit"]').click();
   
   // Wait for redirect back to properties page
   cy.url({ timeout: 10000 }).should('match', /\/properties/);

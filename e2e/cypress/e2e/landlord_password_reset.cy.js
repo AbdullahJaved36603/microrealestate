@@ -1,3 +1,4 @@
+/* eslint-disable cypress/unsafe-to-chain-command */
 /// <reference types="cypress" />
 
 /**
@@ -16,9 +17,7 @@
  */
 
 const forgotPasswordUrl = 'http://localhost:8080/landlord/forgotpassword';
-const signInUrl = 'http://localhost:8080/landlord/signin';
 const validEmail = Cypress.env('LANDLORD_EMAIL') || 'muhammadabdullah36603@gmail.com';
-const validPassword = Cypress.env('LANDLORD_PASSWORD') || 'Abdullah1.';
 const newPassword = 'NewPass@123';
 
 describe('MODULE 5: AUTHENTICATION - PASSWORD RESET', () => {
@@ -73,8 +72,6 @@ describe('MODULE 5: AUTHENTICATION - PASSWORD RESET', () => {
    * 5. Restoring original password for subsequent tests
    */
   it('TC-AUTH-RESET-MIN-002: Should reset password with valid token and redirect to signin', () => {
-    let resetToken;
-
     // Step 1: Request password reset
     cy.request({
       method: 'POST',
@@ -85,10 +82,7 @@ describe('MODULE 5: AUTHENTICATION - PASSWORD RESET', () => {
       expect(response.status).to.eq(204);
     });
 
-    // Step 2: Wait a moment for token generation
-    cy.wait(1000);
-
-    // Step 3: Get the token from Redis (simulating getting it from email)
+    // Step 2: Get the token from Redis (simulating getting it from email)
     // In a real scenario, the user would click a link in the email
     // For testing, we'll generate a token by making another request and intercepting
     // Since we can't directly access Redis in this test, we'll use a workaround:

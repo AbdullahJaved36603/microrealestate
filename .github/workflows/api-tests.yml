@@ -53,7 +53,7 @@ jobs:
           NODE_ENV: test
 
       - name: Upload Unit Test Coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./services/api/coverage/unit/lcov.info
           flags: unit-tests
@@ -117,7 +117,7 @@ jobs:
           REDIS_URL: redis://localhost:6379
 
       - name: Upload Integration Test Coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./services/api/coverage/integration/lcov.info
           flags: integration-tests
@@ -219,14 +219,14 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Full Coverage Report
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./services/api/coverage/lcov.info
           flags: all-tests
           name: full-coverage
 
       - name: Archive Coverage Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: services/api/coverage/

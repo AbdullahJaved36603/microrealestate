@@ -68,7 +68,7 @@ services:
       CORS_ENABLED: 'true'
       TENANTAPI_URL: http://tenantapi:8250/tenantapi
     ports:
-      - '8080:8080'
+      - '${APP_PORT:-8080}:8080'
     # healthcheck:
     #   test:
     #     [
@@ -258,7 +258,7 @@ services:
       PORT: 8180
       DOCKER_GATEWAY_URL: http://gateway:8080
       CORS_ENABLED: 'true'
-      GATEWAY_URL: ${APP_PROTOCOL:-http}://${APP_DOMAIN:-localhost}${APP_PORT:+:}${APP_PORT}
+      GATEWAY_URL: ${APP_PROTOCOL:-http}://${APP_DOMAIN:-localhost}:${APP_PORT:-8080}
       NODE_ENV: production
       SIGNUP: 'true'
     expose:
@@ -279,7 +279,7 @@ services:
       PORT: 8190
       DOCKER_GATEWAY_URL: http://gateway:8080
       CORS_ENABLED: 'true'
-      GATEWAY_URL: ${APP_PROTOCOL:-http}://${APP_DOMAIN:-localhost}${APP_PORT:+:}${APP_PORT}
+      GATEWAY_URL: ${APP_PROTOCOL:-http}://${APP_DOMAIN:-localhost}:${APP_PORT:-8080}
       NODE_ENV: production
     expose:
       - '8190'

@@ -279,7 +279,7 @@ jobs:
 
       - name: Run Prettier Check
         working-directory: ./services/api
-        run: yarn prettier --check 'src/**/*.{js,ts}'
+        run: npx prettier --check 'src/**/*.{js,ts}'
 
   test-summary:
     name: Test Summary

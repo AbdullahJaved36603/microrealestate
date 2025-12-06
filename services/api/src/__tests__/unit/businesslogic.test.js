@@ -29,8 +29,10 @@ describe('Business Logic - computeRent Unit Tests', () => {
     test('should compute rent with correct term, month, and year', () => {
       const computedRent = BL.computeRent(contract, '01/01/2023');
       const rentMoment = moment('01/01/2023', 'DD/MM/YYYY HH:mm');
-      
-      expect(computedRent.term).toEqual(Number(rentMoment.format('YYYYMMDDHH')));
+
+      expect(computedRent.term).toEqual(
+        Number(rentMoment.format('YYYYMMDDHH'))
+      );
       expect(computedRent.month).toEqual(rentMoment.month() + 1);
       expect(computedRent.year).toEqual(rentMoment.year());
     });
@@ -44,23 +46,27 @@ describe('Business Logic - computeRent Unit Tests', () => {
 
     test('should calculate VAT correctly', () => {
       const computedRent = BL.computeRent(contract, '01/01/2023');
-      const baseAmount = computedRent.total.preTaxAmount + computedRent.total.charges;
+      const baseAmount =
+        computedRent.total.preTaxAmount + computedRent.total.charges;
       const expectedVAT = Math.round(baseAmount * 0.2 * 100) / 100;
-      
+
       expect(computedRent.total.vat).toEqual(expectedVAT);
     });
 
     test('should calculate grandTotal correctly', () => {
       const computedRent = BL.computeRent(contract, '01/01/2023');
       // grandTotal = preTaxAmount + charges + vat (when balance is 0)
-      const expectedGrandTotal = computedRent.total.preTaxAmount + computedRent.total.charges + computedRent.total.vat;
-      
+      const expectedGrandTotal =
+        computedRent.total.preTaxAmount +
+        computedRent.total.charges +
+        computedRent.total.vat;
+
       expect(computedRent.total.grandTotal).toEqual(expectedGrandTotal);
     });
 
     test('should have zero balance for first rent', () => {
       const computedRent = BL.computeRent(contract, '01/01/2023');
-      
+
       expect(computedRent.total.balance).toEqual(0);
     });
   });
@@ -87,7 +93,7 @@ describe('Business Logic - computeRent Unit Tests', () => {
 
     test('should apply discount correctly', () => {
       const computedRent = BL.computeRent(contractWithDiscount, '01/01/2023');
-      
+
       expect(computedRent.total.discount).toEqual(100);
       expect(computedRent.total.preTaxAmount).toEqual(2000);
       expect(computedRent.total.charges).toEqual(0);
@@ -96,8 +102,12 @@ describe('Business Logic - computeRent Unit Tests', () => {
     test('should calculate grandTotal with discount applied', () => {
       const computedRent = BL.computeRent(contractWithDiscount, '01/01/2023');
       // grandTotal = preTaxAmount + charges - discount + vat
-      const expectedGrandTotal = computedRent.total.preTaxAmount + computedRent.total.charges - computedRent.total.discount + computedRent.total.vat;
-      
+      const expectedGrandTotal =
+        computedRent.total.preTaxAmount +
+        computedRent.total.charges -
+        computedRent.total.discount +
+        computedRent.total.vat;
+
       expect(computedRent.total.grandTotal).toEqual(expectedGrandTotal);
     });
   });
@@ -142,7 +152,7 @@ describe('Business Logic - computeRent Unit Tests', () => {
 
     test('should apply discount to total of all properties', () => {
       const computedRent = BL.computeRent(multiPropertyContract, '01/01/2023');
-      
+
       expect(computedRent.total.discount).toEqual(50);
     });
 
@@ -175,7 +185,7 @@ describe('Business Logic - computeRent Unit Tests', () => {
     test('should carry forward previous balance as debt', () => {
       const firstRent = BL.computeRent(contract, '01/01/2023');
       const secondRent = BL.computeRent(contract, '01/02/2023', firstRent);
-      
+
       expect(secondRent.total.balance).toEqual(firstRent.total.grandTotal);
     });
 
@@ -183,7 +193,7 @@ describe('Business Logic - computeRent Unit Tests', () => {
       const rent1 = BL.computeRent(contract, '01/01/2023');
       const rent2 = BL.computeRent(contract, '01/02/2023', rent1);
       const rent3 = BL.computeRent(contract, '01/03/2023', rent2);
-      
+
       expect(rent3.total.balance).toEqual(rent2.total.grandTotal);
       expect(rent3.total.grandTotal).toBeGreaterThan(rent2.total.grandTotal);
     });
@@ -211,10 +221,12 @@ describe('Business Logic - computeRent Unit Tests', () => {
 
     test('should calculate rent without VAT when rate is 0', () => {
       const computedRent = BL.computeRent(contractNoVAT, '01/01/2023');
-      
+
       expect(computedRent.total.vat).toEqual(0);
       // grandTotal = preTaxAmount + charges when VAT is 0
-      expect(computedRent.total.grandTotal).toEqual(computedRent.total.preTaxAmount + computedRent.total.charges);
+      expect(computedRent.total.grandTotal).toEqual(
+        computedRent.total.preTaxAmount + computedRent.total.charges
+      );
     });
   });
 
@@ -240,7 +252,7 @@ describe('Business Logic - computeRent Unit Tests', () => {
       };
 
       const computedRent = BL.computeRent(contract, '01/01/2023');
-      
+
       expect(computedRent.total.preTaxAmount).toEqual(500);
       expect(computedRent.total.charges).toEqual(0);
     });
@@ -267,11 +279,13 @@ describe('Business Logic - computeRent Unit Tests', () => {
 
       const rent1 = BL.computeRent(contract, '01/06/2023 10:00');
       const rent2 = BL.computeRent(contract, '01/06/2023 15:30');
-      
+
       // Terms will be different for different times (includes hour in format)
       expect(rent1.term).not.toEqual(rent2.term);
       // But they should be on the same day
-      expect(Math.floor(rent1.term / 100)).toEqual(Math.floor(rent2.term / 100));
+      expect(Math.floor(rent1.term / 100)).toEqual(
+        Math.floor(rent2.term / 100)
+      );
     });
   });
 
@@ -297,7 +311,7 @@ describe('Business Logic - computeRent Unit Tests', () => {
 
     test('should return rent object with all required fields', () => {
       const computedRent = BL.computeRent(contract, '01/01/2023');
-      
+
       expect(computedRent).toHaveProperty('term');
       expect(computedRent).toHaveProperty('month');
       expect(computedRent).toHaveProperty('year');
@@ -312,7 +326,7 @@ describe('Business Logic - computeRent Unit Tests', () => {
 
     test('should have total object with all required fields', () => {
       const computedRent = BL.computeRent(contract, '01/01/2023');
-      
+
       expect(computedRent.total).toHaveProperty('balance');
       expect(computedRent.total).toHaveProperty('preTaxAmount');
       expect(computedRent.total).toHaveProperty('charges');
@@ -324,7 +338,7 @@ describe('Business Logic - computeRent Unit Tests', () => {
 
     test('should have arrays for preTaxAmounts, charges, discounts, debts, vats, and payments', () => {
       const computedRent = BL.computeRent(contract, '01/01/2023');
-      
+
       expect(Array.isArray(computedRent.preTaxAmounts)).toBe(true);
       expect(Array.isArray(computedRent.charges)).toBe(true);
       expect(Array.isArray(computedRent.discounts)).toBe(true);

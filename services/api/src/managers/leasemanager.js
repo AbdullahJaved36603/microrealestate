@@ -1,6 +1,7 @@
 import { Collections, logger, ServiceError } from '@microrealestate/common';
 
-const getRealm = (req) => req.realm || { _id: req.headers?.organizationid || 'realm123' };
+const getRealm = (req) =>
+  req.realm || { _id: req.headers?.organizationid || 'realm123' };
 
 /**
  * @returns a Set of leaseId (_id)
@@ -188,7 +189,9 @@ export async function one(req, res) {
     realmId: realm._id
   });
   const dbLease =
-    typeof leaseQuery?.lean === 'function' ? await leaseQuery.lean() : leaseQuery;
+    typeof leaseQuery?.lean === 'function'
+      ? await leaseQuery.lean()
+      : leaseQuery;
 
   if (!dbLease) {
     throw new ServiceError('lease not found', 404);

@@ -45,8 +45,10 @@ export default {
 
   // Module name mapper for workspace packages
   moduleNameMapper: {
-    '^@microrealestate/common$': '<rootDir>/src/__mocks__/@microrealestate/common.js',
-    '^@microrealestate/common/(.*)$': '<rootDir>/src/__mocks__/@microrealestate/common.js',
+    '^@microrealestate/common$':
+      '<rootDir>/src/__mocks__/@microrealestate/common.js',
+    '^@microrealestate/common/(.*)$':
+      '<rootDir>/src/__mocks__/@microrealestate/common.js'
   },
 
   // Transform

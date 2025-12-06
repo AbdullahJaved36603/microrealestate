@@ -62,7 +62,7 @@ describe('Security Tests - Input Validation', () => {
 
       expect(validatePrice(1000)).toBe(true);
       expect(validatePrice(0)).toBe(true);
-      expect(validatePrice(1500.50)).toBe(true);
+      expect(validatePrice(1500.5)).toBe(true);
       expect(validatePrice(-100)).toBe(false);
       expect(validatePrice('1000')).toBe(false);
       expect(validatePrice(NaN)).toBe(false);
@@ -224,7 +224,7 @@ describe('Security Tests - Input Validation', () => {
       };
 
       expect(validatePaymentAmount(1000)).toBe(true);
-      expect(validatePaymentAmount(1500.50)).toBe(true);
+      expect(validatePaymentAmount(1500.5)).toBe(true);
       expect(validatePaymentAmount(0)).toBe(true);
       expect(validatePaymentAmount(999.99)).toBe(true);
       expect(validatePaymentAmount(-100)).toBe(false);
@@ -268,9 +268,7 @@ describe('Security Tests - Input Validation', () => {
       expect(validatePaymentReference('CHK123456')).toBe(true);
       expect(validatePaymentReference('')).toBe(true);
       expect(validatePaymentReference(null)).toBe(true);
-      expect(validatePaymentReference('<script>alert(1)</script>')).toBe(
-        false
-      );
+      expect(validatePaymentReference('<script>alert(1)</script>')).toBe(false);
       expect(validatePaymentReference('a'.repeat(101))).toBe(false);
     });
   });
@@ -342,13 +340,7 @@ describe('Security Tests - Input Validation', () => {
       expect(validateBulkDelete('id1,id2,id3')).toBe(true);
       expect(validateBulkDelete('abc123')).toBe(true);
       expect(validateBulkDelete('id1,<script>,id3')).toBe(false);
-      expect(
-        validateBulkDelete(
-          Array(101)
-            .fill('id')
-            .join(',')
-        )
-      ).toBe(false);
+      expect(validateBulkDelete(Array(101).fill('id').join(','))).toBe(false);
       expect(validateBulkDelete('')).toBe(false);
     });
 

@@ -49,6 +49,7 @@ services/api/src/__tests__/
 Tests for individual functions and business logic components.
 
 #### Business Logic Tests (`unit/businesslogic.test.js`)
+
 - ✅ Rent calculation for single property
 - ✅ Rent calculation with multiple properties
 - ✅ VAT calculation
@@ -57,6 +58,7 @@ Tests for individual functions and business logic components.
 - ✅ Edge cases (zero VAT, no expenses)
 
 #### Contract Manager Tests (`unit/contract.test.js`)
+
 - ✅ Contract creation with different frequencies
 - ✅ Contract validation (dates, properties)
 - ✅ Contract update and renewal
@@ -65,6 +67,7 @@ Tests for individual functions and business logic components.
 - ✅ Error handling
 
 #### Lease Manager Tests (`unit/leasemanager.test.js`)
+
 - ✅ CRUD operations
 - ✅ Lease validation
 - ✅ Usage tracking by tenants
@@ -75,12 +78,14 @@ Tests for individual functions and business logic components.
 Tests for API endpoints and database operations.
 
 #### API Endpoints Tests (`integration/api-endpoints.test.js`)
+
 - ✅ Lease endpoints (GET, POST, PATCH, DELETE)
 - ✅ Property endpoints
 - ✅ Dashboard statistics
 - ✅ Error responses (404, 422, 403)
 
 #### Database Query Tests (`integration/database-queries.test.js`)
+
 - ✅ Tenant CRUD operations
 - ✅ Property queries
 - ✅ Lease queries
@@ -92,6 +97,7 @@ Tests for API endpoints and database operations.
 Tests for authentication, authorization, and security vulnerabilities.
 
 #### Authentication & Authorization Tests (`security/authentication-authorization.test.js`)
+
 - ✅ Access token validation
 - ✅ Token expiration handling
 - ✅ Invalid token detection
@@ -102,6 +108,7 @@ Tests for authentication, authorization, and security vulnerabilities.
 - ✅ Data exposure prevention
 
 #### Input Validation Tests (`security/input-validation.test.js`)
+
 - ✅ Lease input validation
 - ✅ Property input validation
 - ✅ Tenant input validation
@@ -167,12 +174,12 @@ npm test -- --watch unit/businesslogic.test.js
 
 The test suite enforces the following coverage thresholds:
 
-| Metric      | Threshold |
-|-------------|-----------|
-| Statements  | 80%       |
-| Branches    | 75%       |
-| Functions   | 75%       |
-| Lines       | 80%       |
+| Metric     | Threshold |
+| ---------- | --------- |
+| Statements | 80%       |
+| Branches   | 75%       |
+| Functions  | 75%       |
+| Lines      | 80%       |
 
 ### View Coverage Report
 
@@ -191,6 +198,7 @@ cat coverage/coverage-summary.json | jq '.total'
 ### GitHub Actions Workflow
 
 The tests are automatically executed on:
+
 - Push to `master` or `develop` branches
 - Pull requests to `master` or `develop` branches
 - Changes to API, common services, or types
@@ -223,10 +231,12 @@ act -j security-tests
 ## Test Coverage by Module
 
 ### Business Logic (`businesslogic/`)
+
 - ✅ computeRent function
 - ✅ All task modules (base, debts, discounts, VATs, balance, payments, total)
 
 ### Managers (`managers/`)
+
 - ✅ Contract Manager (100% coverage)
 - ✅ Lease Manager (100% coverage)
 - ⚠️ Occupant Manager (covered via integration tests)
@@ -235,6 +245,7 @@ act -j security-tests
 - ⚠️ Dashboard Manager (covered via integration tests)
 
 ### Routes (`routes.js`)
+
 - ✅ All endpoints tested via integration tests
 - ✅ Authentication middleware
 - ✅ Authorization middleware
@@ -242,6 +253,7 @@ act -j security-tests
 ## Mock Data Strategy
 
 The tests use a combination of:
+
 - **Jest mocks** for external dependencies (database, services)
 - **Real functions** for business logic
 - **Test fixtures** for consistent test data
@@ -261,12 +273,14 @@ The tests use a combination of:
 ### Common Issues
 
 #### Tests timing out
+
 ```bash
 # Increase timeout in jest.config.js or individual tests
 jest.setTimeout(10000);
 ```
 
 #### Module not found errors
+
 ```bash
 # Rebuild TypeScript dependencies
 npm run build --workspace=types
@@ -274,6 +288,7 @@ npm run build --workspace=services/common
 ```
 
 #### Coverage below threshold
+
 ```bash
 # Check coverage report to identify uncovered lines
 npm test -- --coverage
@@ -293,17 +308,20 @@ When adding new features to the landlord module:
 ## Test Scenarios Covered
 
 ### Functional Testing
+
 - ✅ Login and authentication
 - ✅ Data submission and validation
 - ✅ Navigation between endpoints
 - ✅ Error handling
 
 ### Non-Functional Testing
+
 - ✅ Security (injection attacks, XSS)
 - ✅ Input validation
 - ✅ Authentication and authorization
 
 ### White-box Testing
+
 - ✅ Statement coverage
 - ✅ Branch coverage
 - ✅ Function coverage
@@ -312,6 +330,7 @@ When adding new features to the landlord module:
 ## Automated Test Execution
 
 Tests are automatically executed:
+
 - ✅ On every commit to protected branches
 - ✅ On every pull request
 - ✅ With detailed coverage reports

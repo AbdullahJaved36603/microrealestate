@@ -4,7 +4,7 @@
 
 // Mock console methods to reduce noise in test output
 global.console = {
-  ...console,
+  ...console
   // Uncomment to suppress console output during tests
   // log: () => {},
   // debug: () => {},

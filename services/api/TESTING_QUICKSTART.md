@@ -113,6 +113,7 @@ Lines        : 86.21% ( XXX/XXX )
 ### Issue: Tests fail with "Cannot find module"
 
 **Solution:**
+
 ```bash
 # Rebuild TypeScript dependencies
 npm run build --workspace=types
@@ -122,6 +123,7 @@ npm run build --workspace=services/common
 ### Issue: Tests timeout
 
 **Solution:**
+
 ```bash
 # Tests have 10 second timeout by default
 # If needed, increase in jest.config.js or individual test files
@@ -130,6 +132,7 @@ npm run build --workspace=services/common
 ### Issue: Coverage below threshold
 
 **Solution:**
+
 ```bash
 # View detailed coverage report
 npm run test:coverage
@@ -141,6 +144,7 @@ open coverage/lcov-report/index.html
 ## CI/CD
 
 Tests automatically run on:
+
 - Every commit to master/develop
 - Every pull request
 - Can be triggered manually via GitHub Actions

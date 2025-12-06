@@ -630,7 +630,10 @@ describe('Security Tests - SQL/NoSQL Injection', () => {
         { input: '<script>alert("xss")</script>', expected: false },
         { input: 'SELECT * FROM users', expected: false },
         { input: "'; DROP TABLE users; --", expected: false },
-        { input: '{{ constructor.constructor("return process")() }}', expected: false }
+        {
+          input: '{{ constructor.constructor("return process")() }}',
+          expected: false
+        }
       ];
 
       const hasSpecialChars = (str) => {
@@ -644,7 +647,7 @@ describe('Security Tests - SQL/NoSQL Injection', () => {
     });
 
     test('should validate numeric inputs', () => {
-      const validNumbers = [0, 100, 1000.50, -50];
+      const validNumbers = [0, 100, 1000.5, -50];
       const invalidNumbers = [NaN, Infinity, -Infinity, '100', null, undefined];
 
       validNumbers.forEach((num) => {

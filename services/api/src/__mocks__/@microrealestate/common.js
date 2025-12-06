@@ -6,9 +6,9 @@ const createQueryResult = (defaultResult = []) => ({
   sort: jest.fn().mockReturnValue({
     lean: jest.fn().mockResolvedValue(defaultResult)
   }),
-  count: jest.fn().mockResolvedValue(
-    Array.isArray(defaultResult) ? defaultResult.length : 0
-  )
+  count: jest
+    .fn()
+    .mockResolvedValue(Array.isArray(defaultResult) ? defaultResult.length : 0)
 });
 
 // Mock for @microrealestate/common module
@@ -100,17 +100,18 @@ export const Middlewares = {
   }),
   checkOrganization: jest.fn(() => (req, res, next) => {
     const realmId = req.headers?.organizationid || 'realm123';
-    req.realms =
-      req.realms ||
-      [
-        {
-          _id: realmId,
-          name: 'Test Organization',
-          members: [
-            { email: req.user?.email || 'test@example.com', role: 'administrator' }
-          ]
-        }
-      ];
+    req.realms = req.realms || [
+      {
+        _id: realmId,
+        name: 'Test Organization',
+        members: [
+          {
+            email: req.user?.email || 'test@example.com',
+            role: 'administrator'
+          }
+        ]
+      }
+    ];
     req.realm = req.realms[0];
     next();
   }),

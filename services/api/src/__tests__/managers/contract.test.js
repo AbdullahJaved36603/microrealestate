@@ -348,8 +348,8 @@ describe('contract functionalities', () => {
       ]
     });
 
-    const termAmount =
-      contract.rents.find((rent) => rent.term === 2020020100).total.balance;
+    const termAmount = contract.rents.find((rent) => rent.term === 2020020100)
+      .total.balance;
     expect(
       contract.rents.find((rent) => rent.term === 2020020100).total.balance
     ).toEqual(termAmount);
@@ -444,18 +444,7 @@ describe('contract functionalities', () => {
     });
 
     const termsGrandTotal = [
-      360,
-      348,
-      336,
-      324,
-      312,
-      300,
-      288,
-      648,
-      1008,
-      1368,
-      1728,
-      2088
+      360, 348, 336, 324, 312, 300, 288, 648, 1008, 1368, 1728, 2088
     ];
 
     expect(contract.rents.map((r) => r.total.grandTotal)).toEqual(
@@ -477,18 +466,7 @@ describe('contract functionalities', () => {
     const newContract = Contract.update(contract, { properties: [p1, p2] });
 
     const updatedTermsGrandTotal = [
-      360,
-      732,
-      1104,
-      1476,
-      1848,
-      2220,
-      2592,
-      3336,
-      4080,
-      4824,
-      5568,
-      6312
+      360, 732, 1104, 1476, 1848, 2220, 2592, 3336, 4080, 4824, 5568, 6312
     ];
 
     expect(newContract.rents.map((r) => r.total.grandTotal)).toEqual(
@@ -541,18 +519,7 @@ describe('contract functionalities', () => {
     });
 
     const termsGrandTotal = [
-      360,
-      720,
-      1080,
-      1440,
-      1800,
-      2160,
-      2520,
-      2880,
-      2880,
-      2880,
-      2880,
-      2880
+      360, 720, 1080, 1440, 1800, 2160, 2520, 2880, 2880, 2880, 2880, 2880
     ];
 
     expect(contract.rents.map((r) => r.total.grandTotal)).toEqual(
@@ -592,18 +559,7 @@ describe('contract functionalities', () => {
     });
 
     const termsGrandTotal = [
-      360,
-      720,
-      1080,
-      1440,
-      1800,
-      2160,
-      2904,
-      3648,
-      4392,
-      5136,
-      5880,
-      6624
+      360, 720, 1080, 1440, 1800, 2160, 2904, 3648, 4392, 5136, 5880, 6624
     ];
 
     expect(contract.rents.map((r) => r.total.grandTotal)).toEqual(

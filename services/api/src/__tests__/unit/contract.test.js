@@ -371,7 +371,9 @@ describe('Contract Manager - Unit Tests', () => {
 
       const renewedContract = Contract.renew(originalContract);
 
-      expect(renewedContract.rents.length).toBe(originalContract.rents.length * 2);
+      expect(renewedContract.rents.length).toBe(
+        originalContract.rents.length * 2
+      );
       expect(renewedContract.terms).toBe(originalContract.terms);
     });
 
@@ -416,7 +418,10 @@ describe('Contract Manager - Unit Tests', () => {
         properties: [baseProperty]
       });
 
-      const terminatedContract = Contract.terminate(originalContract, '2023-06-30');
+      const terminatedContract = Contract.terminate(
+        originalContract,
+        '2023-06-30'
+      );
 
       expect(terminatedContract.rents.length).toBeLessThan(
         originalContract.rents.length
@@ -434,9 +439,14 @@ describe('Contract Manager - Unit Tests', () => {
         properties: [baseProperty]
       });
 
-      const terminatedContract = Contract.terminate(originalContract, '2023-06-30');
+      const terminatedContract = Contract.terminate(
+        originalContract,
+        '2023-06-30'
+      );
 
-      expect(terminatedContract.rents.length).toBeLessThan(originalContract.rents.length);
+      expect(terminatedContract.rents.length).toBeLessThan(
+        originalContract.rents.length
+      );
     });
   });
 

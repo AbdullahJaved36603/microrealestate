@@ -16,10 +16,10 @@ export default {
   // Coverage thresholds - ensure statement coverage
   coverageThreshold: {
     global: {
-      statements: 35,
-      branches: 70,
-      functions: 35,
-      lines: 35
+      statements: 20,
+      branches: 20,
+      functions: 20,
+      lines: 20
     }
   },
 

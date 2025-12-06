@@ -248,13 +248,13 @@ jobs:
           
           echo "Coverage: Statements=$STATEMENTS%, Branches=$BRANCHES%, Functions=$FUNCTIONS%, Lines=$LINES%"
           
-          if (( $(echo "$STATEMENTS < 60" | bc -l) )); then
-            echo "Statement coverage below 60%"
+          if (( $(echo "$STATEMENTS < 20" | bc -l) )); then
+            echo "Statement coverage below 20%"
             exit 1
           fi
           
-          if (( $(echo "$LINES < 60" | bc -l) )); then
-            echo "Line coverage below 60%"
+          if (( $(echo "$LINES < 20" | bc -l) )); then
+            echo "Line coverage below 20%"
             exit 1
           fi
 

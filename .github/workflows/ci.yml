@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --immutable
 
       - name: Lint
         run: yarn lint
@@ -156,7 +156,7 @@ jobs:
           LANDLORD_APP_URL: ${{ secrets.CI_LANDLORD_APP_URL }}
         run: |
           corepack enable
-          yarn
+          yarn install --immutable
           yarn run e2e:ci
 
       - name: Upload cypress artifacts

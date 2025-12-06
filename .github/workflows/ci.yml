@@ -38,31 +38,31 @@ jobs:
       matrix:
         include:
           - appname: gateway
-            image: ghcr.io/${{ github.repository }}/gateway
+            image: ghcr.io/${{ toLower(github.repository) }}/gateway
             dockerfile: services/gateway/Dockerfile
           - appname: api
-            image: ghcr.io/${{ github.repository }}/api
+            image: ghcr.io/${{ toLower(github.repository) }}/api
             dockerfile: services/api/Dockerfile
           - appname: tenantapi
-            image: ghcr.io/${{ github.repository }}/tenantapi
+            image: ghcr.io/${{ toLower(github.repository) }}/tenantapi
             dockerfile: services/tenantapi/Dockerfile
           - appname: authenticator
-            image: ghcr.io/${{ github.repository }}/authenticator
+            image: ghcr.io/${{ toLower(github.repository) }}/authenticator
             dockerfile: services/authenticator/Dockerfile
           - appname: pdfgenerator
-            image: ghcr.io/${{ github.repository }}/pdfgenerator
+            image: ghcr.io/${{ toLower(github.repository) }}/pdfgenerator
             dockerfile: services/pdfgenerator/Dockerfile
           - appname: emailer
-            image: ghcr.io/${{ github.repository }}/emailer
+            image: ghcr.io/${{ toLower(github.repository) }}/emailer
             dockerfile: services/emailer/Dockerfile
           - appname: resetservice
-            image: ghcr.io/${{ github.repository }}/resetservice
+            image: ghcr.io/${{ toLower(github.repository) }}/resetservice
             dockerfile: services/resetservice/Dockerfile
           - appname: landlord-frontend
-            image: ghcr.io/${{ github.repository }}/landlord-frontend
+            image: ghcr.io/${{ toLower(github.repository) }}/landlord-frontend
             dockerfile: webapps/landlord/Dockerfile
           - appname: tenant-frontend
-            image: ghcr.io/${{ github.repository }}/tenant-frontend
+            image: ghcr.io/${{ toLower(github.repository) }}/tenant-frontend
             dockerfile: webapps/tenant/Dockerfile
 
     steps:

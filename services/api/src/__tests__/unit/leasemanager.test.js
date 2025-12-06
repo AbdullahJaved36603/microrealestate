@@ -1,7 +1,7 @@
 /* eslint-env node, jest */
 import { jest } from '@jest/globals';
-import * as leaseManager from '../../managers/leasemanager.js';
 import { Collections, ServiceError } from '@microrealestate/common';
+import * as leaseManager from '../../managers/leasemanager.js';
 
 // Mock the Collections module
 jest.mock('@microrealestate/common', () => ({

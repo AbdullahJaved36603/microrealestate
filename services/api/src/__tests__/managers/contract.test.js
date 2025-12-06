@@ -417,14 +417,6 @@ describe('contract functionalities', () => {
       expenses: [{ title: 'expense', amount: 10 }]
     };
 
-    let termP1 =
-      p1.rent +
-      p1.expenses.reduce((acc, { amount }) => {
-        acc += amount;
-        return acc;
-      }, 0);
-    termP1 *= 1.2; // VAT
-
     const contract = Contract.create({
       begin: Date.parse('2020-01-01T00:00:00'),
       end: Date.parse('2020-12-31T23:59:59'),
@@ -481,14 +473,6 @@ describe('contract functionalities', () => {
       rent: 320,
       expenses: [{ title: 'expense', amount: 32 }]
     };
-
-    let termP2 =
-      p2.rent +
-      p2.expenses.reduce((acc, { amount }) => {
-        acc += amount;
-        return acc;
-      }, 0);
-    termP2 *= 1.2; // VAT
 
     const newContract = Contract.update(contract, { properties: [p1, p2] });
 
@@ -548,14 +532,6 @@ describe('contract functionalities', () => {
       expenses: [{ title: 'expense', amount: 10 }]
     };
 
-    let rentAmountProperty1 =
-      property.rent +
-      property.expenses.reduce((acc, { amount }) => {
-        acc += amount;
-        return acc;
-      }, 0);
-    rentAmountProperty1 *= 1.2; // VAT
-
     const contract = Contract.create({
       begin: Date.parse('2020-01-01T00:00:00'),
       end: Date.parse('2020-12-31T23:59:59'),
@@ -596,14 +572,6 @@ describe('contract functionalities', () => {
       expenses: [{ title: 'expense', amount: 10 }]
     };
 
-    let termP1 =
-      p1.rent +
-      p1.expenses.reduce((acc, { amount }) => {
-        acc += amount;
-        return acc;
-      }, 0);
-    termP1 *= 1.2; // VAT
-
     const p2 = {
       entryDate: Date.parse('2020-07-01T00:00:00'),
       exitDate: Date.parse('2020-12-31T23:59:59'),
@@ -614,14 +582,6 @@ describe('contract functionalities', () => {
       rent: 320,
       expenses: [{ title: 'expense', amount: 32 }]
     };
-
-    let termP2 =
-      p2.rent +
-      p2.expenses.reduce((acc, { amount }) => {
-        acc += amount;
-        return acc;
-      }, 0);
-    termP2 *= 1.2; // VAT
 
     const contract = Contract.create({
       begin: Date.parse('2020-01-01T00:00:00'),

@@ -1,3 +1,4 @@
+/* eslint-disable cypress/unsafe-to-chain-command */
 /// <reference types="cypress" />
 
 describe('MODULE 1: AUTHENTICATION - SIGN UP', () => {

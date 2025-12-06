@@ -7,15 +7,6 @@ export default {
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: true,
 
-  // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: [
-    './src/**/*.js',
-    '!./src/__mocks__/**',
-    '!./src/__tests__/**',
-    '!./src/index.js',
-    '!./src/locales/**'
-  ],
-
   // The directory where Jest should output its coverage files
   coverageDirectory: 'coverage',
 
@@ -70,9 +61,10 @@ export default {
   // Collect coverage from
   collectCoverageFrom: [
     'src/**/*.js',
-    '!src/__tests__/**',
     '!src/__mocks__/**',
-    '!src/index.js'
+    '!src/__tests__/**',
+    '!src/index.js',
+    '!src/locales/**'
   ],
 
   // Coverage reporters

@@ -1,9 +1,9 @@
 /* eslint-env node, jest */
 import { jest } from '@jest/globals';
-import request from 'supertest';
+import { Collections, Middlewares } from '@microrealestate/common';
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { Middlewares, Collections } from '@microrealestate/common';
+import request from 'supertest';
 
 // Mock the common module
 jest.mock('@microrealestate/common', () => ({
@@ -634,7 +634,7 @@ describe('Security Tests - SQL/NoSQL Injection', () => {
       ];
 
       const hasSpecialChars = (str) => {
-        const dangerousChars = /[<>\{\}\$\(\);\*'`]|--|\/\*|\*\//;
+        const dangerousChars = /[<>${}();*'`]|--|\/\*|\*\//;
         return dangerousChars.test(str);
       };
 

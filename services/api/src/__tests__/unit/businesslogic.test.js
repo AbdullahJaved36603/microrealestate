@@ -1,7 +1,6 @@
 /* eslint-env node, jest */
-import { jest } from '@jest/globals';
-import * as BL from '../../businesslogic/index.js';
 import moment from 'moment';
+import * as BL from '../../businesslogic/index.js';
 
 describe('Business Logic - computeRent Unit Tests', () => {
   describe('Single property rental', () => {

@@ -1,3 +1,4 @@
+/* eslint-disable cypress/unsafe-to-chain-command */
 /// <reference types="cypress" />
 
 // MODULE 4: TENANT MANAGEMENT - ADD TENANT
@@ -24,7 +25,7 @@ const loginAndGoTenants = () => {
   
   // Navigate to tenants page via app menu
   cy.get('[data-cy="appMenu"]').click();
-  cy.get("div:nth-of-type(3) span").click(); // Tenants menu item
+  cy.get('div:nth-of-type(3) span').click(); // Tenants menu item
   
   // Verify we're on tenants page
   cy.url({ timeout: 15000 }).should('match', /\/tenants/);

@@ -1,9 +1,9 @@
 /* eslint-env node, jest */
 import { jest } from '@jest/globals';
 import { Collections } from '@microrealestate/common';
-import request from 'supertest';
-import express from 'express';
 import routes from '../../routes.js';
+import express from 'express';
+import request from 'supertest';
 
 const apiPrefix = '/api/v2';
 

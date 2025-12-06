@@ -1,3 +1,4 @@
+/* eslint-disable cypress/unsafe-to-chain-command */
 /// <reference types="cypress" />
 
 const baseUrl = 'http://localhost:8080/landlord/signin';

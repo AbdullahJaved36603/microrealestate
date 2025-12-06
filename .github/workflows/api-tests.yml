@@ -1,0 +1,328 @@
+name: Landlord API Tests CI/CD
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      - 'services/api/**'
+      - 'services/common/**'
+      - 'types/**'
+      - '.github/workflows/api-tests.yml'
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths:
+      - 'services/api/**'
+      - 'services/common/**'
+      - 'types/**'
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install API service dependencies
+        working-directory: ./services/api
+        run: npm ci
+
+      - name: Build TypeScript dependencies
+        run: |
+          npm run build --workspace=types
+          npm run build --workspace=services/common
+
+      - name: Run Unit Tests
+        working-directory: ./services/api
+        run: npm test -- --testPathPattern=unit --coverage --coverageDirectory=coverage/unit
+        env:
+          NODE_ENV: test
+
+      - name: Upload Unit Test Coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./services/api/coverage/unit/lcov.info
+          flags: unit-tests
+          name: unit-test-coverage
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_DATABASE: test
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd services/api && npm ci
+
+      - name: Build TypeScript dependencies
+        run: |
+          npm run build --workspace=types
+          npm run build --workspace=services/common
+
+      - name: Run Integration Tests
+        working-directory: ./services/api
+        run: npm test -- --testPathPattern=integration --coverage --coverageDirectory=coverage/integration
+        env:
+          NODE_ENV: test
+          MONGO_URL: mongodb://localhost:27017/test
+          REDIS_URL: redis://localhost:6379
+
+      - name: Upload Integration Test Coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./services/api/coverage/integration/lcov.info
+          flags: integration-tests
+          name: integration-test-coverage
+
+  security-tests:
+    name: Security Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd services/api && npm ci
+
+      - name: Build TypeScript dependencies
+        run: |
+          npm run build --workspace=types
+          npm run build --workspace=services/common
+
+      - name: Run Security Tests
+        working-directory: ./services/api
+        run: npm test -- --testPathPattern=security --coverage --coverageDirectory=coverage/security
+        env:
+          NODE_ENV: test
+
+      - name: Upload Security Test Coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./services/api/coverage/security/lcov.info
+          flags: security-tests
+          name: security-test-coverage
+
+  all-tests:
+    name: All Tests with Coverage Report
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, security-tests]
+
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_DATABASE: test
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd services/api && npm ci
+
+      - name: Build TypeScript dependencies
+        run: |
+          npm run build --workspace=types
+          npm run build --workspace=services/common
+
+      - name: Run All Tests
+        working-directory: ./services/api
+        run: npm test -- --coverage
+        env:
+          NODE_ENV: test
+          MONGO_URL: mongodb://localhost:27017/test
+          REDIS_URL: redis://localhost:6379
+
+      - name: Generate Coverage Report
+        working-directory: ./services/api
+        run: |
+          echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          cat coverage/coverage-summary.json | jq -r '.total | "Statements: \(.statements.pct)%\nBranches: \(.branches.pct)%\nFunctions: \(.functions.pct)%\nLines: \(.lines.pct)%"' >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Full Coverage Report
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./services/api/coverage/lcov.info
+          flags: all-tests
+          name: full-coverage
+
+      - name: Archive Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: services/api/coverage/
+
+      - name: Check Coverage Thresholds
+        working-directory: ./services/api
+        run: |
+          STATEMENTS=$(cat coverage/coverage-summary.json | jq '.total.statements.pct')
+          BRANCHES=$(cat coverage/coverage-summary.json | jq '.total.branches.pct')
+          FUNCTIONS=$(cat coverage/coverage-summary.json | jq '.total.functions.pct')
+          LINES=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
+          
+          echo "Coverage: Statements=$STATEMENTS%, Branches=$BRANCHES%, Functions=$FUNCTIONS%, Lines=$LINES%"
+          
+          if (( $(echo "$STATEMENTS < 80" | bc -l) )); then
+            echo "Statement coverage below 80%"
+            exit 1
+          fi
+          
+          if (( $(echo "$LINES < 80" | bc -l) )); then
+            echo "Line coverage below 80%"
+            exit 1
+          fi
+
+  code-quality:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd services/api && npm ci
+
+      - name: Build TypeScript dependencies
+        run: |
+          npm run build --workspace=types
+          npm run build --workspace=services/common
+
+      - name: Run ESLint
+        working-directory: ./services/api
+        run: npm run eslint
+
+      - name: Run Prettier Check
+        working-directory: ./services/api
+        run: npx prettier --check 'src/**/*.js'
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, security-tests, all-tests, code-quality]
+    if: always()
+
+    steps:
+      - name: Check test results
+        run: |
+          echo "## Test Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Unit Tests: ${{ needs.unit-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Integration Tests: ${{ needs.integration-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Security Tests: ${{ needs.security-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All Tests: ${{ needs.all-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Code Quality: ${{ needs.code-quality.result }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Report failure
+        if: |
+          needs.unit-tests.result == 'failure' ||
+          needs.integration-tests.result == 'failure' ||
+          needs.security-tests.result == 'failure' ||
+          needs.all-tests.result == 'failure' ||
+          needs.code-quality.result == 'failure'
+        run: exit 1

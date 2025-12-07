@@ -19,6 +19,6 @@ node_modules
 tmp
 mre*
 docker-compose*
-dev.Dockerfile
-Dockerfile
+# Keep Dockerfiles in the build context (Railway and other PaaS need them)
+# Removed dev.Dockerfile and Dockerfile exclusions
 LICENSE

@@ -10,12 +10,18 @@ replaceBasePath();
  */
 function replaceBasePath() {
   const BASE_PATH = process.env.BASE_PATH || '';
-  // get all files in the .next directory
-  const nextDir = path.join(__dirname, '.next');
+  // In container, working directory is /usr/app, so .next and server.js are at cwd
+  const workingDir = process.cwd();
+  const nextDir = path.join(workingDir, '.next');
   // add server.js to the list of files to replace
-  const nextDirFiles = [path.join(__dirname, 'server.js')];
+  const nextDirFiles = [path.join(workingDir, 'server.js')];
   // crawl nextDir and return all files
-  _crawl(nextDir, nextDirFiles);
+  if (fs.existsSync(nextDir)) {
+    _crawl(nextDir, nextDirFiles);
+  } else {
+    console.warn(`[replacebasepath.js] .next directory not found at ${nextDir}, skipping path replacement`);
+    return;
+  }
 
   // filter files which end with .js, .json, .html, .css, .map and trace file
   const nextDirFilesToReplace = nextDirFiles.filter((f) => {

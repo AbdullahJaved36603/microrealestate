@@ -110,15 +110,16 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway up --service gateway
-          railway up --service api
-          railway up --service tenantapi
-          railway up --service authenticator
-          railway up --service pdfgenerator
-          railway up --service emailer
-          railway up --service resetservice
-          railway up --service landlord-frontend
-          railway up --service tenant-frontend
+          railway link 9f3830f8-72de-4edb-960e-42e84d3ac825
+          railway up --service gateway --detach
+          railway up --service api --detach
+          railway up --service tenantapi --detach
+          railway up --service authenticator --detach
+          railway up --service pdfgenerator --detach
+          railway up --service emailer --detach
+          railway up --service resetservice --detach
+          railway up --service landlord --detach
+          railway up --service tenant --detach
 
   healthcheck:
     runs-on: ubuntu-latest

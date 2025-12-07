@@ -21,6 +21,10 @@ try {
 }
 
 try {
+  // Ensure PORT is set for Railway and other PaaS platforms
+  if (!process.env.PORT) {
+    process.env.PORT = 3000;
+  }
   // server.js file is generated at build time by nextjs (see .next/standalone/webapps/XXXXX/server.js)
   require('./server');
 } catch (error) {

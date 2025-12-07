@@ -30,7 +30,6 @@ COPY webapps/landlord/next.config.js webapps/landlord
 COPY webapps/landlord/package.json webapps/landlord
 COPY webapps/landlord/postcss.config.js webapps/landlord
 COPY webapps/landlord/tailwind.config.js webapps/landlord
-COPY webapps/landlord/tsconfig.json webapps/landlord
 RUN test -f webapps/landlord/tsconfig.json || \
     echo '{"compilerOptions":{"lib":["dom","dom.iterable","esnext"],"allowJs":true,"skipLibCheck":true,"strict":false,"forceConsistentCasingInFileNames":true,"noEmit":true,"incremental":true,"esModuleInterop":true,"moduleResolution":"node","resolveJsonModule":true,"isolatedModules":true,"jsx":"preserve","module":"esnext"},"include":["next-env.d.ts","**/*.ts","**/*.tsx"],"exclude":["node_modules"]}' > webapps/landlord/tsconfig.json
 RUN  yarn workspace @microrealestate/landlord run build
